@@ -48,8 +48,9 @@ var whiteListFilterCmd = &cobra.Command{
 			err         error    // 错误
 		)
 
-		// 获取页面文件内容
+		// 获取待整理的文件内容
 		if fileContent, err = readFile(originFile); err != nil {
+			fmt.Println("源文件读取错误")
 			goto ERR
 		}
 
@@ -57,7 +58,7 @@ var whiteListFilterCmd = &cobra.Command{
 		result = regexContent(fileContent)
 
 		// 去重
-		result = removeRepByMap(result)
+		result, _ = removeDuplicateElement(result)
 
 		// 输出排序
 		sort.Slice(result, func(i, j int) bool {
@@ -66,6 +67,7 @@ var whiteListFilterCmd = &cobra.Command{
 
 		// 写入到目标文件
 		if err = writeFile(distFile, result); err != nil {
+			fmt.Println("目标文件写入错误")
 			goto ERR
 		}
 
@@ -79,23 +81,28 @@ var whiteListFilterCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(whiteListFilterCmd)
-	whiteListFilterCmd.PersistentFlags().StringVarP(&originFile, "origin", "o", "./code.html", "提供原始文件")
-	whiteListFilterCmd.PersistentFlags().StringVarP(&distFile, "dist", "d", "./dist.txt", "提供目标文件")
+	whiteListFilterCmd.Flags().StringVarP(&originFile, "origin", "o", "./code.htm1l", "提供原始文件")
+	whiteListFilterCmd.Flags().StringVarP(&distFile, "dist", "d", "./dist.txt", "提供目标文件")
 }
 
-// removeRepByMap: 通过map主键唯一的特性过滤重复元素
-func removeRepByMap(slc []string) []string {
-	result := []string{}
-	tempMap := map[string]byte{} // 存放不重复主键
-	for _, e := range slc {
-		// fmt.Println(e)
-		l := len(tempMap)
-		tempMap[e] = 0
-		if len(tempMap) != l { // 加入map后，map长度变化，则元素不重复
-			result = append(result, e)
+// removeDuplicateElement: 删除slice中重复的元素
+func removeDuplicateElement(addrs []string) (result []string, duplicates []string) {
+	var (
+		item string
+		temp map[string]struct{}
+		ok   bool
+	)
+	result = make([]string, 0, len(addrs))
+	temp = map[string]struct{}{}
+	for _, item = range addrs {
+		if _, ok = temp[item]; !ok {
+			temp[item] = struct{}{}
+			result = append(result, item)
+		} else {
+			duplicates = append(duplicates, item)
 		}
 	}
-	return result
+	return
 }
 
 // readFile 读文件
