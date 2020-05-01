@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "go-purge-css/cmd"
+import "github.com/ava-cn/purge-css/cmd"
 
 func main() {
 	cmd.Execute()
