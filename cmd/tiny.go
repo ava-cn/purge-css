@@ -16,7 +16,7 @@ var (
 // tinyCmd represents the tiny command
 var tinyCmd = &cobra.Command{
 	Use:   "tiny",
-	Short: "文件去除重复，排序",
+	Short: "去除文件重复行并排序。",
 	Long: `文件去除重复，排序
 注意：文件内容会被修改`,
 	Run: func(cmd *cobra.Command, args []string) {

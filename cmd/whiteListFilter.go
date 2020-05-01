@@ -38,7 +38,7 @@ const classAndIDRegex = `(id|class)=["'](.*?)["']`
 // whiteListFilterCmd represents the whiteListFilter command
 var whiteListFilterCmd = &cobra.Command{
 	Use:   "white-list-filter",
-	Short: "提取页面class和id。",
+	Short: "提取文件中的class和id。并写入到指定的新文件中。",
 	Long: `从提供的源文件中提取需要的class和id。
 去重、按字母排序后覆盖式写入到目标文件。`,
 	Run: func(cmd *cobra.Command, args []string) {

@@ -26,14 +26,23 @@ cp purge-css /usr/local/bin/.
 
 - 文件白名单提取
 
+提取文件中的class和id。并写入到指定的新文件中。
 ```
-purge-css -o "code.html" -d "./dist.txt"
+purge-css white-list-filter -o "code.html" -d "./dist.txt"
 ```
 > `-o` 要修改的文件
 > `-d` 需要写入的文件
 
+
+
 - 文件过滤排序
 
+去除文件重复行并排序。
+
 ```
-purge-css file-tiny -o "./dist.txt"
+purge-css tiny -o "./dist.txt" -s=false
 ```
+
+> `-o` 要过滤的文件
+> `-s` 是否需要排序
+
