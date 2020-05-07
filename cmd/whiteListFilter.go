@@ -16,8 +16,10 @@ limitations under the License.
 package cmd
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"regexp"
 	"sort"
@@ -49,9 +51,16 @@ var whiteListFilterCmd = &cobra.Command{
 		)
 
 		// 获取待整理的文件内容
-		if fileContent, err = readFile(originFile); err != nil {
-			fmt.Println("源文件读取错误")
-			goto ERR
+		if strings.HasPrefix(originFile, "http") || strings.HasPrefix(originFile, "https") {
+			if fileContent, err = fromRemote(originFile); err != nil {
+				fmt.Println("远程地址读取错误：", err.Error())
+				return
+			}
+		} else {
+			if fileContent, err = fromFile(originFile); err != nil {
+				fmt.Println("文件读取错误:", err.Error())
+				return
+			}
 		}
 
 		// 正则表达式分析出页面对应class和id的值并写入到对应的临时文件
@@ -81,7 +90,7 @@ var whiteListFilterCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(whiteListFilterCmd)
-	whiteListFilterCmd.Flags().StringVarP(&originFile, "origin", "o", "./code.htm1l", "提供原始文件")
+	whiteListFilterCmd.Flags().StringVarP(&originFile, "origin", "o", "./code.html", "提供原始文件")
 	whiteListFilterCmd.Flags().StringVarP(&distFile, "dist", "d", "./dist.txt", "提供目标文件")
 }
 
@@ -111,6 +120,43 @@ func readFile(fileName string) (result []byte, err error) {
 		return nil, err
 	}
 	return result, nil
+}
+
+// 从远程地址中读取内容
+func fromRemote(rURL string) (contents []byte, err error) {
+
+	var (
+		resp *http.Response
+	)
+	// See: https://stackoverflow.com/questions/12122159/how-to-do-a-https-request-with-bad-certificate
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	if resp, err = http.Get(rURL); err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	if contents, err = ioutil.ReadAll(resp.Body); err != nil {
+		return nil, err
+	}
+	return contents, nil
+}
+
+// 从文件中读取内容
+func fromFile(fileName string) (contents []byte, err error) {
+	var (
+		file *os.File
+	)
+	if file, err = os.Open(fileName); err != nil {
+		return nil, err
+	}
+
+	defer file.Close()
+
+	if contents, err = ioutil.ReadAll(file); err != nil {
+		return nil, err
+	}
+	return contents, err
 }
 
 // writeFile 写文件
