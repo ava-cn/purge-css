@@ -27,6 +27,24 @@ cp purge-css /usr/local/bin/.
 - `white-list-filter`
 - `tiny`
 
+```
+~ purge-css
+分析和优化PurgeCSS插件所需class或id
+
+Usage:
+  purge-css [command]
+
+Available Commands:
+  help              Help about any command
+  tiny              去除文件重复行并排序。
+  white-list-filter 提取文件中的class和id。并写入到指定的新文件中。
+
+Flags:
+  -h, --help   help for purge-css
+
+Use "purge-css [command] --help" for more information about a command.
+```
+
 ### 文件白名单提取
 
 提取文件中的class和id。并写入到指定的新文件中。
