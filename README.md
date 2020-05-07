@@ -31,13 +31,15 @@ cp purge-css /usr/local/bin/.
 
 提取文件中的class和id。并写入到指定的新文件中。
 ```
-purge-css white-list-filter -o "code.html" -d "./dist.txt"
+purge-css white-list-filter -o "./code.html" -d "./dist.txt" # 查看./code.html符合规则的数据写入到当前脚本运行目录下的./dist.txt文件下
+
+purge-css white-list-filter -o https://github.com/ava-cn/purge-css # 查看URL地址下符合规则的数据写入到当前脚本运行目录下的./dist.txt文件下
 ```
 
-- `-o` 要修改的文件
-- `-d` 需要写入的文件
+- `-o` 默认值`./code.html` 要搜索的文件或者文件地址。**支持本地文件路径和http或https协议的URL路径**
+- `-d` 默认值`./dist.txt`  需要写入的文件
 
-
+> 如果是需要请求发起网络请求，可能执行时间会比较慢，需耐心等待。
 
 ### 文件过滤排序
 
@@ -47,5 +49,5 @@ purge-css white-list-filter -o "code.html" -d "./dist.txt"
 purge-css tiny -o "./dist.txt" -s=false
 ```
 
-- `-o` 要过滤的文件
+- `-o` 要过滤的文件和修正的文件地址，一般为项目的`white-list.txt`文件
 - `-s` 是否需要排序「默认不提供是true」
