@@ -29,7 +29,7 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "go-purge-css",
+	Use:   "purge-css",
 	Short: "分析和优化文件所需class或id",
 	Long:  `分析和优化PurgeCSS插件所需class或id`,
 	// Uncomment the following line if your bare application
@@ -75,7 +75,7 @@ func initConfig() {
 
 		// Search config in home directory with name ".go-purge-css" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".go-purge-css")
+		viper.SetConfigName(".purge-css")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
